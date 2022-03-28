@@ -1,0 +1,47 @@
+// Copyright 2016 Google, Inc. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
+syntax = "proto3";
+package auth;
+option go_package = "./;auth";
+
+import "google/api/annotations.proto";
+service Auth {
+  rpc Login (LoginRequest) returns (LoginResponse){
+    option (google.api.http) = {
+      post: "/v1/auth/login"
+      body: "*"
+    };
+  };
+  rpc GetUserInfo(UserIdRequest) returns(User){
+    option (google.api.http) = {
+      post: "/v1/auth/getUserInfo"
+      body: "*"
+    };
+  };
+}
+
+// The request message containing the username and password.
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+// The response message containing the JWT token.
+message LoginResponse {
+  string token = 1;
+}
+
+// The user message containing the user.
+message User {
+  int32  id = 1;
+  string email = 2;
+  string username = 3;
+  string passwordHash = 4;
+  bool   isAdmin = 5;
+}
+
+message UserIdRequest{
+  int32  id = 1;
+}

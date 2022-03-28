@@ -1,0 +1,166 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "userlogin.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/auth/getUserInfo": {
+      "post": {
+        "operationId": "Auth_GetUserInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/authUser"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/authUserIdRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/auth/login": {
+      "post": {
+        "operationId": "Auth_Login",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/authLoginResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/authLoginRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Auth"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "authLoginRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "description": "The request message containing the username and password."
+    },
+    "authLoginResponse": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      },
+      "description": "The response message containing the JWT token."
+    },
+    "authUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "email": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "passwordHash": {
+          "type": "string"
+        },
+        "isAdmin": {
+          "type": "boolean"
+        }
+      },
+      "description": "The user message containing the user."
+    },
+    "authUserIdRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "runtimeError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

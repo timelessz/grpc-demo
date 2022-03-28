@@ -1,0 +1,198 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "book.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/addbook": {
+      "post": {
+        "summary": "添加书籍信息",
+        "operationId": "BookService_AddBookInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v3BookInfoParams"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v3BookInfo"
+            }
+          }
+        ],
+        "tags": [
+          "BookService"
+        ]
+      }
+    },
+    "/v1/getbookinfo": {
+      "post": {
+        "summary": "获取书籍信息",
+        "operationId": "BookService_GetBookInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v3BookInfo"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v3BookInfoParams"
+            }
+          }
+        ],
+        "tags": [
+          "BookService"
+        ]
+      }
+    },
+    "/v1/getbooklist": {
+      "post": {
+        "summary": "获取图书列表",
+        "operationId": "BookService_GetBookList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v3BookList"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v3BookListParams"
+            }
+          }
+        ],
+        "tags": [
+          "BookService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "runtimeError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v3BookInfo": {
+      "type": "object",
+      "properties": {
+        "book_id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "book_name": {
+          "type": "string"
+        }
+      },
+      "title": "书详情信息的结构   book_name字符串类型"
+    },
+    "v3BookInfoParams": {
+      "type": "object",
+      "properties": {
+        "book_id": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "请求书详情的参数结构  book_id 32位整形"
+    },
+    "v3BookList": {
+      "type": "object",
+      "properties": {
+        "book_list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v3BookInfo"
+          }
+        }
+      },
+      "title": "书列表的结构    BookInfo结构数组"
+    },
+    "v3BookListParams": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "limit": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "请求书列表的参数结构  page、limit   32位整形"
+    }
+  }
+}

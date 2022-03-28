@@ -1,0 +1,25 @@
+// msg.proto
+syntax = "proto3";
+option go_package = "./msg;msg";
+
+package Message;
+
+message SearchRequest {
+  reserved 6, 9 to 12;
+  reserved "foo", "bar";
+  string query = 1;
+  int32 page_number = 2;
+  int32 result_per_page = 3;
+}
+
+message ResultType {
+  message Result {
+    string url = 1;
+    string title = 2;
+    repeated string snippets = 3;
+  }
+}
+
+message SearchResponse {
+  repeated ResultType.Result results = 1;
+}
