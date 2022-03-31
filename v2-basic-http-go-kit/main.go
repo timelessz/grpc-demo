@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/go-kit/log"
-	calculate2 "go-kit-demo/basic-http-go-kit/calculate"
+	calculate2 "go-kit-demo/v2-basic-http-go-kit/calculate"
 	"net/http"
 	"os"
 )

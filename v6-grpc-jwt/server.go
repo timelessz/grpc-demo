@@ -38,7 +38,7 @@ func (*server) Login(ctx context.Context, lr *auth.LoginRequest) (*auth.LoginRes
 func (s *server) GetUserInfo(ctx context.Context, UIR *auth.UserIdRequest) (*auth.User, error) {
 	//parseJwtToken()
 	token, err := getTokenFromContext(ctx)
-	println(token)
+	println("token:" + token)
 	if err != nil {
 		return nil, status.Errorf(codes.PermissionDenied, "token 验证异常")
 	}
@@ -65,7 +65,6 @@ func getTokenFromContext(ctx context.Context) (string, error) {
 	if !ok || len(token) == 0 {
 		return "", fmt.Errorf("ErrNoAuthorizationInMetadata")
 	}
-	fmt.Println(token)
 	// 因此，token 是一个字符串数组，我们只用了 token[0]
 	return token[0], nil
 }
