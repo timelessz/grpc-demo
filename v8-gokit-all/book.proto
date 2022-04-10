@@ -1,0 +1,53 @@
+syntax = "proto3";
+option go_package = "./book;v3";
+import "google/api/annotations.proto";
+
+// 请求书籍 详情   根据id等查询
+message BookQueryParams {
+  string name = 2;
+  string author = 3;
+  float price = 4;
+  int32 page = 5;
+  int32 limit = 6;
+}
+
+message OneBookQueryParams {
+  string id = 1;
+}
+
+message Book {
+  int32 id = 1;
+  string name = 2;
+  string author = 3;
+  float price = 4;
+  string description = 5;
+}
+
+
+message BookList {
+  repeated Book books = 1;
+  int32 total = 2;
+}
+
+service BookService {
+  rpc GetBookList(BookQueryParams) returns (BookList) {
+    option (google.api.http) = {
+      get: "/v3/book/list"
+    };
+  }
+  rpc GetOneBook(OneBookQueryParams) returns (Book) {
+    option (google.api.http) = {
+      get: "/v3/book/one"
+    };
+  }
+  rpc CreateBook(Book) returns (Book) {
+    option (google.api.http) = {
+      post: "/v3/book/create"
+      body: "*"
+    };
+  }
+  
+}
+
+
+
