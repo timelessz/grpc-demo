@@ -4,15 +4,17 @@ import (
 	"context"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	v8 "go-kit-demo/v8-gokit-all/book"
+	"go-kit-demo/v8-gokit-all/book"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type BookService interface {
-	GetBookList(ctx context.Context, bqp *v8.BookQueryParams) (*v8.BookList, error)
-	GetOneBook(ctx context.Context, obp *v8.OneBookQueryParams) (*v8.Book, error)
-	CreateBook(ctx context.Context, bi *v8.Book) (*v8.Book, error)
+	GetBookList(ctx context.Context, bqp *book.BookQueryParams) (*book.BookList, error)
+	GetOneBook(ctx context.Context, obp *book.OneBookQueryParams) (*book.Book, error)
+	CreateBook(ctx context.Context, bi *book.Book) (*book.Book, error)
+	BookHealthCheck(context.Context, *emptypb.Empty) (*book.HealthResponse, error)
 }
 type NewMiddlewareService func(server BookService) BookService
 
@@ -28,16 +30,21 @@ func NewBookService(logger *logrus.Logger) BookService {
 	return NewBookServiceLogMiddleware(logger)(server)
 }
 
-func (b BookServer) GetBookList(ctx context.Context, bqp *v8.BookQueryParams) (*v8.BookList, error) {
+func (b BookServer) GetBookList(ctx context.Context, bqp *book.BookQueryParams) (*book.BookList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetBookList not implemented")
 }
 
-func (b BookServer) GetOneBook(ctx context.Context, obqp *v8.OneBookQueryParams) (*v8.Book, error) {
+func (b BookServer) GetOneBook(ctx context.Context, obqp *book.OneBookQueryParams) (*book.Book, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOneBook not implemented")
 }
 
-func (b BookServer) CreateBook(ctx context.Context, book *v8.Book) (*v8.Book, error) {
+func (b BookServer) CreateBook(ctx context.Context, book *book.Book) (*book.Book, error) {
 	println("service CreateBook")
 	fmt.Println(book.Id)
 	return book, status.Errorf(codes.OK, "返回值正确")
+}
+
+func (b BookServer) BookHealthCheck(ctx context.Context, empty *emptypb.Empty) (*book.HealthResponse, error) {
+	//TODO implement me
+	return &book.HealthResponse{Status: "OK"}, nil
 }

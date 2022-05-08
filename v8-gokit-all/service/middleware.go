@@ -5,6 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 	auth "go-kit-demo/v8-gokit-all/auth"
 	v8 "go-kit-demo/v8-gokit-all/book"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"time"
 )
 
@@ -103,4 +104,28 @@ func (mw LoginServiceLogMiddleware) GetUserInfo(ctx context.Context, request *au
 		}).Info("GetUserInfo")
 	}(time.Now())
 	return mw.next.GetUserInfo(ctx, request)
+}
+
+func (mw LoginServiceLogMiddleware) AuthHealthCheck(ctx context.Context, empty *emptypb.Empty) (*auth.HealthResponse, error) {
+	//TODO implement me
+	defer func(begin time.Time) {
+		mw.logger.WithFields(logrus.Fields{
+			"method": "AuthHealthCheck",
+			//"id":     id,
+			"took": time.Since(begin),
+		}).Info("GetUserInfo")
+	}(time.Now())
+	return mw.next.AuthHealthCheck(ctx, empty)
+}
+
+func (mw BookServiceLogMiddleware) BookHealthCheck(ctx context.Context, empty *emptypb.Empty) (*v8.HealthResponse, error) {
+	//TODO implement me
+	defer func(begin time.Time) {
+		mw.logger.WithFields(logrus.Fields{
+			"method": "BookHealthCheck",
+			//"id":     id,
+			"took": time.Since(begin),
+		}).Info("GetUserInfo")
+	}(time.Now())
+	return mw.next.BookHealthCheck(ctx, empty)
 }

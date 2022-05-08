@@ -4,6 +4,11 @@
     "title": "book.proto",
     "version": "version not set"
   },
+  "tags": [
+    {
+      "name": "BookService"
+    }
+  ],
   "consumes": [
     "application/json"
   ],
@@ -11,20 +16,20 @@
     "application/json"
   ],
   "paths": {
-    "/v3/book/create": {
+    "/v8/book/create": {
       "post": {
         "operationId": "BookService_CreateBook",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/Book"
+              "$ref": "#/definitions/bookBook"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/runtimeError"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -34,7 +39,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/Book"
+              "$ref": "#/definitions/bookBook"
             }
           }
         ],
@@ -43,20 +48,42 @@
         ]
       }
     },
-    "/v3/book/list": {
+    "/v8/book/health": {
+      "get": {
+        "operationId": "BookService_BookHealthCheck",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/bookHealthResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "BookService"
+        ]
+      }
+    },
+    "/v8/book/list": {
       "get": {
         "operationId": "BookService_GetBookList",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/BookList"
+              "$ref": "#/definitions/bookBookList"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/runtimeError"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -100,20 +127,20 @@
         ]
       }
     },
-    "/v3/book/one": {
+    "/v8/book/one": {
       "get": {
         "operationId": "BookService_GetOneBook",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/Book"
+              "$ref": "#/definitions/bookBook"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/runtimeError"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -132,7 +159,7 @@
     }
   },
   "definitions": {
-    "Book": {
+    "bookBook": {
       "type": "object",
       "properties": {
         "id": {
@@ -154,13 +181,13 @@
         }
       }
     },
-    "BookList": {
+    "bookBookList": {
       "type": "object",
       "properties": {
         "books": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/Book"
+            "$ref": "#/definitions/bookBook"
           }
         },
         "total": {
@@ -169,24 +196,26 @@
         }
       }
     },
-    "protobufAny": {
+    "bookHealthResponse": {
       "type": "object",
       "properties": {
-        "type_url": {
+        "Status": {
           "type": "string"
-        },
-        "value": {
-          "type": "string",
-          "format": "byte"
         }
       }
     },
-    "runtimeError": {
+    "protobufAny": {
       "type": "object",
       "properties": {
-        "error": {
+        "@type": {
           "type": "string"
-        },
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
         "code": {
           "type": "integer",
           "format": "int32"

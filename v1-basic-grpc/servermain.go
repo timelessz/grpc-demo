@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"github.com/gofrs/uuid"
-	"go-kit-demo/basic-grpc/product"
+	"go-kit-demo/v1-basic-grpc/product"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

@@ -7,6 +7,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -20,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion7
 type AuthClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	GetUserInfo(ctx context.Context, in *UserIdRequest, opts ...grpc.CallOption) (*User, error)
+	AuthHealthCheck(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*HealthResponse, error)
 }
 
 type authClient struct {
@@ -48,12 +50,22 @@ func (c *authClient) GetUserInfo(ctx context.Context, in *UserIdRequest, opts ..
 	return out, nil
 }
 
+func (c *authClient) AuthHealthCheck(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*HealthResponse, error) {
+	out := new(HealthResponse)
+	err := c.cc.Invoke(ctx, "/auth.Auth/AuthHealthCheck", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServer is the server API for Auth service.
 // All implementations should embed UnimplementedAuthServer
 // for forward compatibility
 type AuthServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	GetUserInfo(context.Context, *UserIdRequest) (*User, error)
+	AuthHealthCheck(context.Context, *emptypb.Empty) (*HealthResponse, error)
 }
 
 // UnimplementedAuthServer should be embedded to have forward compatible implementations.
@@ -65,6 +77,9 @@ func (UnimplementedAuthServer) Login(context.Context, *LoginRequest) (*LoginResp
 }
 func (UnimplementedAuthServer) GetUserInfo(context.Context, *UserIdRequest) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserInfo not implemented")
+}
+func (UnimplementedAuthServer) AuthHealthCheck(context.Context, *emptypb.Empty) (*HealthResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthHealthCheck not implemented")
 }
 
 // UnsafeAuthServer may be embedded to opt out of forward compatibility for this service.
@@ -114,6 +129,24 @@ func _Auth_GetUserInfo_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Auth_AuthHealthCheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServer).AuthHealthCheck(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/auth.Auth/AuthHealthCheck",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServer).AuthHealthCheck(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Auth_ServiceDesc is the grpc.ServiceDesc for Auth service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -128,6 +161,10 @@ var Auth_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserInfo",
 			Handler:    _Auth_GetUserInfo_Handler,
+		},
+		{
+			MethodName: "AuthHealthCheck",
+			Handler:    _Auth_AuthHealthCheck_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

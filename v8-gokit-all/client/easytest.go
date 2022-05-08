@@ -1,10 +1,11 @@
-package main
+package client
 
 import (
 	"context"
 	"go-kit-demo/v8-gokit-all/auth"
 	v8 "go-kit-demo/v8-gokit-all/book"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/health/grpc_health_v1"
 	"log"
 	"time"
 )
@@ -30,5 +31,16 @@ func main() {
 	if err != nil {
 		log.Fatalf("could not put: %v", err)
 	}
+	c := grpc_health_v1.NewHealthClient(conn)
+	cr, err := c.Check(ctx, &grpc_health_v1.HealthCheckRequest{Service: "book"})
+	if err != nil {
+		log.Fatalf("could not put: %v", err)
+	}
+	log.Println(cr.Status)
+	cra, err := c.Check(ctx, &grpc_health_v1.HealthCheckRequest{Service: "auth"})
+	if err != nil {
+		log.Fatalf("could not put: %v", err)
+	}
+	log.Println(cra.Status)
 	println(r1.Token)
 }

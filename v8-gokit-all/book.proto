@@ -1,6 +1,8 @@
 syntax = "proto3";
-option go_package = "./book;v3";
+package book;
+option go_package = "./;book";
 import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
 
 // 请求书籍 详情   根据id等查询
 message BookQueryParams {
@@ -29,24 +31,37 @@ message BookList {
   int32 total = 2;
 }
 
+message HealthResponse {
+  string Status = 1;
+}
+
+
 service BookService {
   rpc GetBookList(BookQueryParams) returns (BookList) {
     option (google.api.http) = {
-      get: "/v3/book/list"
+      get: "/v8/book/list"
     };
   }
+
   rpc GetOneBook(OneBookQueryParams) returns (Book) {
     option (google.api.http) = {
-      get: "/v3/book/one"
+      get: "/v8/book/one"
     };
   }
+
   rpc CreateBook(Book) returns (Book) {
     option (google.api.http) = {
-      post: "/v3/book/create"
+      post: "/v8/book/create"
       body: "*"
     };
   }
-  
+
+  rpc BookHealthCheck(google.protobuf.Empty) returns (HealthResponse) {
+    option (google.api.http) = {
+      get: "/v8/book/health"
+    };
+  }
+
 }
 
 

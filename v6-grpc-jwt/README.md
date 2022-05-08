@@ -1,5 +1,5 @@
 ```protobuf
-protoc --go_out = plugins = grpc:auth  *.proto
+    protoc --go_out = plugins = grpc:auth  *.proto
     protoc --grpc-gateway_out = logtostderr= true:auth/ *.proto
     protoc --swagger_out = logtostderr = true:auth/ *.proto
 ```

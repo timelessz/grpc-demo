@@ -2,19 +2,16 @@ package main
 
 import (
 	"context"
-	grpctransport "github.com/go-kit/kit/transport/grpc"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	v2runtime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/sirupsen/logrus"
 	"go-kit-demo/v8-gokit-all/auth"
-	v8 "go-kit-demo/v8-gokit-all/book"
+	"go-kit-demo/v8-gokit-all/book"
 	"go-kit-demo/v8-gokit-all/consul"
 	"go-kit-demo/v8-gokit-all/endpoint"
-	"go-kit-demo/v8-gokit-all/healthservice"
 	"go-kit-demo/v8-gokit-all/service"
 	"go-kit-demo/v8-gokit-all/transport"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/health/grpc_health_v1"
+	"google.golang.org/grpc/reflection"
 	"net"
 	"net/http"
 	"os"
@@ -40,14 +37,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	baseServer := grpc.NewServer(grpc.UnaryInterceptor(grpctransport.Interceptor))
-	v8.RegisterBookServiceServer(baseServer, grpcserver)
+	baseServer := grpc.NewServer()
+	book.RegisterBookServiceServer(baseServer, grpcserver)
 	auth.RegisterAuthServer(baseServer, grpcserver)
-	// 注册 grpc health
-	/*bookHealthservice := healthservice.BookHealthCheckService{}
-	grpc_health_v1.RegisterHealthServer(baseServer, bookHealthservice)*/
-	authHealthservice := healthservice.AuthHealthCheckService{}
-	grpc_health_v1.RegisterHealthServer(baseServer, authHealthservice)
+	reflection.Register(baseServer)
 	log.Info("grpc server start")
 	RegisterService(baseServer, log)
 	if err := baseServer.Serve(grpcListen); err != nil {
@@ -81,26 +74,28 @@ func registerServiceToConsul(log *logrus.Logger) {
 		logrus.Errorf("consul client error: %v", err)
 		return
 	}
-	bookHealthservice := &consul.ServiceInfo{
-		ServiceID:              "book",
-		ServiceName:            "bookService",
-		ServiceAddr:            "127.0.0.1",
-		ServicePort:            8881,
-		HealthCheckServiceName: "BookHealthCheckService",
+	bookService := &consul.ServiceInfo{
+		ServiceID:       "book",
+		ServiceName:     "bookServer",
+		ServiceAddr:     "192.168.2.168",
+		ServicePort:     8881,
+		HealthCheckPort: 8081,
+		HealthCheckPath: "/v8/book/health",
 	}
-	if client.Register(bookHealthservice) {
+	if client.Register(bookService) {
 		log.Info("Consul register book service success")
 	} else {
 		log.Error("Consul register book service failed")
 	}
-	authHealthservice := &consul.ServiceInfo{
-		ServiceID:              "auth",
-		ServiceName:            "authService",
-		ServiceAddr:            "127.0.0.1",
-		ServicePort:            8881,
-		HealthCheckServiceName: "AuthHealthCheckService",
+	authService := &consul.ServiceInfo{
+		ServiceID:       "auth",
+		ServiceName:     "authServer",
+		ServiceAddr:     "192.168.2.168",
+		ServicePort:     8881,
+		HealthCheckPort: 8082,
+		HealthCheckPath: "/v8/auth/health",
 	}
-	if client.Register(authHealthservice) {
+	if client.Register(authService) {
 		log.Info("Consul register auth service success")
 	} else {
 		log.Error("Consul register auth service failed")
@@ -133,12 +128,14 @@ func initLogger() *logrus.Logger {
 	logger := logrus.New()
 	logger.SetLevel(logrus.DebugLevel)
 	//You can set any 'io. Writer' type such as file as log output
-	/*file, err := os.OpenFile("logrus.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	if err == nil {
-		logger.SetOutput(file)
-	} else {
-		logger.Info("Failed to log to file, using default stderr")
-	}*/
+	/*
+		file, err := os.OpenFile("logrus.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+		if err == nil {
+			logger.SetOutput(file)
+		} else {
+			logger.Info("Failed to log to file, using default stderr")
+		}
+	*/
 	logger.SetOutput(os.Stdout)
 	logger.SetFormatter(&logrus.JSONFormatter{
 		FieldMap: logrus.FieldMap{
@@ -154,13 +151,13 @@ func initLogger() *logrus.Logger {
 // httpGRPCGateway
 func bookHttpListenAndServe(log *logrus.Logger) error {
 	println("httpGRPCGateway")
+	mux := v2runtime.NewServeMux()
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
-	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithInsecure(), grpc.WithBlock()}
-	endpoint := "127.0.0.1:8881"
-	err := v8.RegisterBookServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
+	endpoint := "192.168.2.168:8881"
+	err := book.RegisterBookServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -174,7 +171,7 @@ func authHttpListenAndServe(log *logrus.Logger) error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 	opts := []grpc.DialOption{grpc.WithInsecure(), grpc.WithBlock()}
-	endpoint := "127.0.0.1:8881"
+	endpoint := "192.168.2.168:8881"
 	err1 := auth.RegisterAuthHandlerFromEndpoint(ctx, v2authmux, endpoint, opts)
 	if err1 != nil {
 		log.Fatal(err1)

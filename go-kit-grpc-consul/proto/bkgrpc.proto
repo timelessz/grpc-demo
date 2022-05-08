@@ -1,0 +1,21 @@
+syntax = "proto3";
+package gproto;
+message StringRequest {
+    string A = 1;
+    string B = 2;
+}
+message HealthRequest {
+    string A = 1;
+}
+message HealthResponse {
+    string Status = 1;
+}
+message StringResponse {
+    string Msg = 1;
+}
+
+service StringServices {
+    rpc Concat (StringRequest) returns (StringResponse);
+    rpc Diff (StringRequest) returns (StringResponse);
+    rpc HealtStatus (HealthRequest) returns (HealthResponse);
+}

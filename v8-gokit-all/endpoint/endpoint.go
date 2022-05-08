@@ -4,8 +4,9 @@ import (
 	"context"
 	"github.com/go-kit/kit/endpoint"
 	"go-kit-demo/v8-gokit-all/auth"
-	v8 "go-kit-demo/v8-gokit-all/book"
+	"go-kit-demo/v8-gokit-all/book"
 	"go-kit-demo/v8-gokit-all/service"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type EndPointServer struct {
@@ -17,18 +18,20 @@ type EndPointServer struct {
 func makeBookEndpoint(service service.BookService, mws map[string][]endpoint.Middleware) endpoint.Endpoint {
 	endpoint := func(ctx context.Context, request interface{}) (response interface{}, err error) {
 		switch request.(type) {
-		case *v8.BookQueryParams:
-			bq := request.(*v8.BookQueryParams)
+		case *book.BookQueryParams:
+			bq := request.(*book.BookQueryParams)
 			return service.GetBookList(ctx, bq)
-		case *v8.OneBookQueryParams:
-			obq := request.(*v8.OneBookQueryParams)
+		case *book.OneBookQueryParams:
+			obq := request.(*book.OneBookQueryParams)
 			return service.GetOneBook(ctx, obq)
-		case *v8.Book:
-			b := request.(*v8.Book)
+		case *book.Book:
+			b := request.(*book.Book)
 			println("endpoint", b.Name)
 			return service.CreateBook(ctx, b)
+		case *emptypb.Empty:
+			println("1类型错误")
+			return service.BookHealthCheck(ctx, request.(*emptypb.Empty))
 		default:
-			println("错误")
 			println(request)
 			return nil, nil
 		}
@@ -51,7 +54,12 @@ func makeAuthEndpoint(service service.AuthService, mws map[string][]endpoint.Mid
 			println("makeAuthEndpoint")
 			obq := request.(*auth.UserIdRequest)
 			return service.GetUserInfo(ctx, obq)
+		case *emptypb.Empty:
+			println("类型错误")
+			empty := request.(*emptypb.Empty)
+			return service.AuthHealthCheck(ctx, empty)
 		default:
+			println("类型错误")
 			return nil, nil
 		}
 	}

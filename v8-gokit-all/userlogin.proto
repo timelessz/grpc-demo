@@ -1,26 +1,10 @@
-// Copyright 2016 Google, Inc. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
-
 syntax = "proto3";
 package auth;
 option go_package = "./;auth";
-
 import "google/api/annotations.proto";
-service Auth {
-  rpc Login (LoginRequest) returns (LoginResponse){
-    option (google.api.http) = {
-      post: "/v1/auth/login"
-      body: "*"
-    };
-  };
-  rpc GetUserInfo(UserIdRequest) returns(User){
-    option (google.api.http) = {
-      post: "/v1/auth/getUserInfo"
-      body: "*"
-    };
-  };
-}
+import "google/protobuf/empty.proto";
+
+
 
 // The request message containing the username and password.
 message LoginRequest {
@@ -45,3 +29,28 @@ message User {
 message UserIdRequest{
   int32  id = 1;
 }
+
+message HealthResponse {
+  string Status = 1;
+}
+
+service Auth {
+  rpc Login (LoginRequest) returns (LoginResponse){
+    option (google.api.http) = {
+      post: "/v8/auth/login"
+      body: "*"
+    };
+  };
+  rpc GetUserInfo(UserIdRequest) returns(User){
+    option (google.api.http) = {
+      post: "/v8/auth/getUserInfo"
+      body: "*"
+    };
+  };
+  rpc AuthHealthCheck(google.protobuf.Empty) returns (HealthResponse) {
+    option (google.api.http) = {
+      get: "/v8/auth/health"
+    };
+  }
+}
+

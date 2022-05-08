@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"go-kit-demo/basic-grpc/product"
+	"go-kit-demo/v1-basic-grpc/product"
 	"google.golang.org/grpc"
 	"log"
 )

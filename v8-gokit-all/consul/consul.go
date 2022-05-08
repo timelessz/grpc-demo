@@ -21,11 +21,12 @@ type ConsulClient struct {
 }
 
 type ServiceInfo struct {
-	ServiceID              string
-	ServiceName            string
-	ServiceAddr            string
-	ServicePort            int
-	HealthCheckServiceName string
+	ServiceID       string
+	ServiceName     string
+	ServiceAddr     string
+	ServicePort     int
+	HealthCheckPort int
+	HealthCheckPath string
 }
 
 func NewKitDiscoverClient(consulHost string, consulPort int) (*ConsulClient, error) {
@@ -65,17 +66,30 @@ func NewConsulClient(consulHost string, consulPort int, log *logrus.Logger) (*Co
 // service register in consul
 func (c ConsulClient) Register(set *ServiceInfo) bool {
 	err := c.Client.Register(&consulapi.AgentServiceRegistration{
-		ID:      set.ServiceID,
-		Name:    set.ServiceName,
-		Address: set.ServiceAddr,
-		Port:    set.ServicePort,
+		Kind:              "",
+		ID:                set.ServiceID,
+		Name:              set.ServiceName,
+		Tags:              nil,
+		Port:              set.ServicePort,
+		Address:           set.ServiceAddr,
+		SocketPath:        "",
+		TaggedAddresses:   nil,
+		EnableTagOverride: false,
+		Meta:              nil,
+		Weights:           nil,
 		Check: &consulapi.AgentServiceCheck{
-			GRPC:     set.ServiceAddr + ":" + strconv.Itoa(set.ServicePort) + "/" + set.HealthCheckServiceName,
+			HTTP:     "http://" + set.ServiceAddr + ":" + strconv.Itoa(set.HealthCheckPort) + set.HealthCheckPath,
 			Interval: "10s",
 			Timeout:  "5s",
 		},
+		Checks:    nil,
+		Proxy:     nil,
+		Connect:   nil,
+		Namespace: "",
+		Partition: "",
 	})
 	if err != nil {
+		println(err.Error())
 		return false
 	}
 	return true
