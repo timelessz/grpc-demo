@@ -9,24 +9,23 @@ go kit 框架的所有内容，包括：
     - [x] GO-KIT 中间件：service 中间件、endpoints 中间件
 -
     -[X] swagger 文档: grpc-gate-way
-- JWT认证 JWT
-- 服务限流 uber/go-kit/ratelimit
-- 服务降级、服务熔断 hystrix
-- 服务负载均衡 (轮询、随机、虚拟节点) load balancer
+- -[ ] JWT认证 JWT
+- -[ ] 服务限流 uber/go-kit/ratelimit
+- -[ ] 服务降级、服务熔断 hystrix
+- -[ ] 服务负载均衡 (轮询、随机、虚拟节点) load balancer
 -
     -[ ] 服务发现
 -
     -[X] 服务注册 consul
-- 服务链路追踪 jaeger
-- 服务状态监控  (支持监控、报警、持久化) prometheus grafana
+-  -[ ] 服务链路追踪 jaeger
+-  -[ ] 服务状态监控  (支持监控、报警、持久化) prometheus grafana
 -
     -[ ] TLS
 -
     - [X] 日志管理 logrus
-- 日志收集、日志分析、日志持久化 ELK+filebeat ？？？
+- -[ ] 日志收集、日志分析、日志持久化 ELK+filebeat ？？？
 
 ---
-
 - [grpc官网 ](https://grpc.io/docs/languages/go/quickstart/)
 - [grpc-gateway](https://grpc-ecosystem.github.io/grpc-gateway)
 - [GRPC Health Checking Protocol](https://github.com/grpc/grpc/blob/master/doc/health-checking.md)
@@ -83,5 +82,6 @@ openssl req -new -x509 -sha256 -key server.key -out server.pem -days 3650
 docker pull jaegertracing/all-in-one 
 docker run -d -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16686:16686 -p14268:14268 -p9411:9411 jaegertracing/all-in-one:latest
 ```
+
 ### 关于metadata：  
 gRPC让我们可以像本地调用一样实现远程调用，对于每一次的RPC调用中，都可能会有一些在header中传递的数据，而这些数据就可以通过metadata来传递。

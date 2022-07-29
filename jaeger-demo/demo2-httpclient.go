@@ -41,7 +41,7 @@ func ClientGetUserInfo(tracer opentracing.Tracer, parentSpan opentracing.Span) {
 		opentracing.ChildOf(parentSpan.Context()),
 	)
 
-	url := "http:/127.0.0.1:8081/Get?username=痴者工良"
+	url := "http:/127.0.0.1:8081/Get?username=timelesszhuang"
 	req, _ := http.NewRequest("GET", url, nil)
 	// 设置 tag，这个 tag 我们后面讲
 	ext.SpanKindRPCClient.Set(childSpan)

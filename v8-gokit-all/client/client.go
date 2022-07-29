@@ -30,7 +30,6 @@ func Run() {
 	ctx := context.Background()
 	discovererEndpoint := MakeAuthDiscoverEndpoint(ctx, client, logger)
 	r := MakeHttpHandler(discovererEndpoint)
-
 	err := http.ListenAndServe(":8080", r)
 	if err != nil {
 		logger.Log("err", err)

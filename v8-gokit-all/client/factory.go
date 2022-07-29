@@ -11,7 +11,6 @@ import (
 
 func authFactory(_ context.Context) sd.Factory {
 	return func(instance string) (endpoint.Endpoint, io.Closer, error) {
-
 		//println("authFactory")
 		//println(instance)
 		//conn, err := grpc.Dial(instance, grpc.WithInsecure())
@@ -21,7 +20,6 @@ func authFactory(_ context.Context) sd.Factory {
 		//)
 		//enc, dec = encodeAuthRequest, decodeAuthResponse
 		//return grpctransport.NewClient(conn, serviceName, method, enc, dec, auth.LoginResponse{}).Endpoint(), conn, err
-
 		return func(ctx context.Context, request interface{}) (response interface{}, err error) {
 			conn, err := grpc.Dial(instance, grpc.WithInsecure())
 			if err != nil {
