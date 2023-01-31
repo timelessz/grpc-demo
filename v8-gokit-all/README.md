@@ -5,25 +5,23 @@ go kit 框架的所有内容，包括：
 - [x] 为已经实现
 - [ ] 尚未实现
 
--
-    - [x] GO-KIT 中间件：service 中间件、endpoints 中间件
--
-    -[X] swagger 文档: grpc-gate-way
+- -[x] GO-KIT 中间件：service 中间件、endpoints 中间件
+- -[X] swagger 文档: grpc-gate-way
 - -[ ] JWT认证 JWT
 - -[ ] 服务限流 uber/go-kit/ratelimit
 - -[ ] 服务降级、服务熔断 hystrix
 - -[ ] 服务负载均衡 (轮询、随机、虚拟节点) load balancer
--
-    -[ ] 服务发现
--
-    -[X] 服务注册 consul
--  -[ ] 服务链路追踪 jaeger
--  -[ ] 服务状态监控  (支持监控、报警、持久化) prometheus grafana
--
-    -[ ] TLS
--
-    - [X] 日志管理 logrus
-- -[ ] 日志收集、日志分析、日志持久化 ELK+filebeat ？？？
+- -[ ] 服务发现
+- -[X] 服务注册 consul
+- -[ ] 服务链路追踪 jaeger
+- -[ ] 服务状态监控  (支持监控、报警、持久化) prometheus grafana
+- -[ ] TLS
+- - [X] 日志管理 logrus
+- -[ ] 日志收集、日志分析、日志持久化 ELK+filebeat ？
+
+
+    
+
 
 ---
 - [grpc官网 ](https://grpc.io/docs/languages/go/quickstart/)
@@ -34,9 +32,11 @@ go kit 框架的所有内容，包括：
 - [tls 详解](https://www.jianshu.com/p/1fc7130eb2c2)
 - [从gRPC安全设计理解双向证书方案]( https://blog.csdn.net/weixin_47208161/article/details/109475931)
 - [公钥、私钥、签名、数字证书的关系](https://www.jianshu.com/p/3c5212b47bec)
-- [golang grpc中metadata的使用](https://blog.csdn.net/lff1123/article/details/122913719)  jaeger传递span使用
+- [golang grpc中metadata的使用](https://blog.csdn.net/lff1123/article/details/122913719)   jaeger传递span使用
 - [Interceptor拦截器 -- gRPC生态里的中间件](https://blog.csdn.net/kevin_tech/article/details/116141626)
+
 ---
+
 auth 授权
 
 ```shell
@@ -65,6 +65,7 @@ docker pull consul
 docker run    -d    -p 8500:8500    -p 8600:8600/udp    --name=badger   consul agent -server -ui -node=server-1 -bootstrap-expect=1 -client=0.0.0.0
 curl -X PUT http://127.0.0.1:8500/v1/agent/service/deregister/book
 ```
+
 
 生成公私钥
 
