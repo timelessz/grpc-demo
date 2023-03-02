@@ -12,7 +12,8 @@ type CalculateMiddleware struct {
 }
 
 func (c CalculateMiddleware) Calculate(ctx context.Context, in CalculateIn) (rs ResultAck) {
-	// something
+	// 服务中间件， 执行服务某项操作之前执行操作
+
 	return c.next.Calculate(ctx, in)
 }
 

@@ -33,6 +33,7 @@ func main() {
 func (s *server) AddProduct(ctx context.Context, in *product.Product) (resp *product.ProductId, err error) {
 	resp = &product.ProductId{}
 	out, err := uuid.NewV4()
+
 	if err != nil {
 		return resp, status.Errorf(codes.Internal, "生成uuid 失败", err)
 	}

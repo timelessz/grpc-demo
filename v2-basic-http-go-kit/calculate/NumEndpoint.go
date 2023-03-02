@@ -2,6 +2,7 @@ package calculate
 
 import (
 	"context"
+	"errors"
 	"github.com/go-kit/kit/endpoint"
 )
 
@@ -23,13 +24,19 @@ func MakeEndpoint(s Service, mdw map[string][]endpoint.Middleware) endpoint.Endp
 
 func NewEndPointServer(svc Service) EndPointServer {
 	//var logger log.Logger
-	// END POINT 中间件定义
+	// ENDPOINT 中间件定义
 	logeMW := func(next endpoint.Endpoint) endpoint.Endpoint {
 		return func(ctx context.Context, request interface{}) (response interface{}, err error) {
 			// something TODO about log
+			// endpoint 中间件， 执行服务某项操作之前执行操作
 			// ctx = ...
 			// request = ...
 			//logger.Log("...")
+			data, ok := request.(CalculateIn)
+			// 计算类型不为  add 时，返回错误
+			if data.Type != "add" && ok {
+				return nil, errors.New("type is not add")
+			}
 			return next(ctx, request)
 		}
 	}
@@ -38,3 +45,12 @@ func NewEndPointServer(svc Service) EndPointServer {
 	cal := MakeEndpoint(svc, emws)
 	return EndPointServer{CalculateEndPoint: cal}
 }
+
+/*
+type Error struct {
+	Msg error
+}
+
+func (e Error) Failed() error {
+	return e.Msg
+}*/
